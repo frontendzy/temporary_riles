@@ -4,7 +4,7 @@
 *   文件名称：from_data文件上传.js
 *   创 建 者：ZY
 *   创建日期：2021年05月23日
-*   描    述：
+*   描    述：文件上传演练
 *
 ================================================================*/
 const path = require('path');
@@ -25,25 +25,25 @@ const storage = multer.diskStorage({
 		cb(null, Date.now() + path.extname(file.originalname));
 		}
 })
-
 const upload = multer({
 // 	dest: './uploads/'// 存储位置
 	storage
 });
 // 解析非常多的文件使用 any
-// app.use(upload.any());
+ app.use(upload.any());
 
-app.post('/login', (req, res, next) => {
-	console.log(req.body);
+app.post('/login', upload.any(),(req, res, next) => {
 	res.end("用户登陆成功～");
 });
 // single 上传单个文件
 // array  上传多个文件
-app.post('/upload', upload.single('file'), (req, res, next) => {
+// app.post('/upload', upload.array('file'), (req, res, next) => {
+app.post('/upload', upload.fields([{name: 'file', maxCount: 2}]), (req, res, next) => {
+
 	// 单个文件使用 file
 	// 多个文件使用 files
 	// 在使用 single的情况下 如果非要使用 files 就这样使用 files[0] 取第0个文件
-	console.log(req.file);
+	console.log(req.files);
 	res.end("文件上传成功～");
 });
 
